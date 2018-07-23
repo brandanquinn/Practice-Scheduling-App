@@ -1,7 +1,7 @@
 const csv = require('csv');
 const fs = require('fs');
 const stats = require('stats-lite');
-const without = require('lodash/without');
+const difference = require('lodash/difference');
 const indexOf = require('lodash/indexOf');
 
 fs.readFile('./availability.csv', (err, data) => {
@@ -24,23 +24,30 @@ fs.readFile('./availability.csv', (err, data) => {
             });
         };
         // Converts array of nested arrays into one array of timeCodes.
-        dateCodeArray = [].concat.apply([], totalAvail);
-        const bestTime = stats.mode(dateCodeArray);
-        // stats.mode() returns either a set of numbers if mode repeats or a single number.
-        const bestTimeArray = [];
-        if (typeof bestTime === 'object') {
-            bestTime.forEach((timeCode) => {
-                prettyPrintTime(timeCode.toString());
-                bestTimeArray.push(timeCode.toString());
+        let dateCodeArray = [].concat.apply([], totalAvail);
+        // Find best times
+        let mode = stats.mode(dateCodeArray);
+        let modeArray = Array.from(mode);
+        console.log(`Mode array: ${modeArray}`);
+        let testArray = difference(dateCodeArray, [...modeArray]);
+        if (indexOf(testArray, modeArray[0]) !== -1) { console.log('Without() not working'); }
+        const newMode = stats.mode(testArray);
+        console.log(`First Mode: ${[...mode]}, Second Mode: ${[...newMode]}`);
+        console.log(...testArray.sort());
+
+        generateDataset(dateCodeArray)
+            .then((bestTime) => {
+                console.log('\nBest times:');
+                console.log(bestTime);
+                printWrapper(bestTime);
+                return generateDataset(dateCodeArray, bestTime);
+            })
+            .then((secondBestTime) => {
+                console.log('\nSecond best times:');
+                const newArray = without(dateCodeArray, ...secondBestTime);
+                secondBestTime ? console.log(secondBestTime) : console.log('Undefined');
+                printWrapper(secondBestTime);
             });
-            generateSecondDataset(dateCodeArray, bestTimeArray)
-                .then((secondBestTime) => {
-                    secondBestTime.forEach((timeCode) => prettyPrintTime(timeCode.toString()));
-                });
-        } else {
-            prettyPrintTime(bestTime.toString());
-            prettyPrintTime(generateSecondDataset(dateCodeArray, bestTime).toString());
-        }
     });
 });
 
@@ -50,6 +57,18 @@ fs.readFile('./availability.csv', (err, data) => {
  * @returns {String}
  */
 const getTimeCode = (time, dayNum) => `${dayNum}${time.trim().slice(0, -2).replace(':', '8')}`;
+
+const printWrapper = (bestTime) => {
+    return new Promise((resolve, reject) => {
+        if (typeof bestTime === 'object') {
+            resolve(bestTime.forEach((timeCode) => {
+                prettyPrintTime(timeCode.toString());
+            }));
+        } else {
+            resolve(prettyPrintTime(bestTime.toString()));
+        }
+    });
+};
 
 /**
  * Takes in an encoded time string and converts it to a readable time string.
@@ -96,15 +115,18 @@ const daySwitch = (dayCode) => {
             return 'Friday';
             break; 
     };
-}
+};
 
-const generateSecondDataset = (timeArray, prevMode) => {
+const generateDataset = (timeArray, prevMode = undefined) => {
     return new Promise((resolve, reject) => {
-        console.log('Second best time slots:');
-        resolve(findMode(timeArray, prevMode));
-    }).catch((err) => console.log(err));
-}
+        if (prevMode === 'object') {
+            resolve(findMode(without(timeArray, [...prevMode])));
+        } else {
+            resolve(findMode(timeArray));
+        }
+    }).catch((err) => console.log('Issue detected'));
+};
 
-const findMode = (timeArray, prevMode) => {
-    return stats.mode(without(timeArray, prevMode));
-}
+const findMode = (timeArray) => {
+    return stats.mode(timeArray);
+};
