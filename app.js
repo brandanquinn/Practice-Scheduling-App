@@ -26,6 +26,7 @@ fs.readFile('./availability.csv', (err, data) => {
         // Converts array of nested arrays into one array of timeCodes.
         let dateCodeArray = [].concat.apply([], totalAvail);
         // Find best times
+<<<<<<< Updated upstream
         let mode = stats.mode(dateCodeArray);
         let modeArray = Array.from(mode);
         console.log(`Mode array: ${modeArray}`);
@@ -34,17 +35,28 @@ fs.readFile('./availability.csv', (err, data) => {
         const newMode = stats.mode(testArray);
         console.log(`First Mode: ${[...mode]}, Second Mode: ${[...newMode]}`);
         console.log(...testArray.sort());
+=======
+>>>>>>> Stashed changes
 
         generateDataset(dateCodeArray)
             .then((bestTime) => {
                 console.log('\nBest times:');
                 console.log(bestTime);
                 printWrapper(bestTime);
+<<<<<<< Updated upstream
+=======
+                const newArray = difference(dateCodeArray, [...bestTime]);
+>>>>>>> Stashed changes
                 return generateDataset(dateCodeArray, bestTime);
             })
             .then((secondBestTime) => {
                 console.log('\nSecond best times:');
+<<<<<<< Updated upstream
                 const newArray = without(dateCodeArray, ...secondBestTime);
+=======
+                console.log(Array.isArray([...secondBestTime]));
+                
+>>>>>>> Stashed changes
                 secondBestTime ? console.log(secondBestTime) : console.log('Undefined');
                 printWrapper(secondBestTime);
             });
