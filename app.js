@@ -2,6 +2,7 @@ const csv = require('csv');
 const fs = require('fs');
 const stats = require('stats-lite');
 const without = require('lodash/without');
+const indexOf = require('lodash/indexOf');
 
 fs.readFile('./availability.csv', (err, data) => {
     if (err) throw err;
@@ -26,19 +27,20 @@ fs.readFile('./availability.csv', (err, data) => {
         dateCodeArray = [].concat.apply([], totalAvail);
         const bestTime = stats.mode(dateCodeArray);
         // stats.mode() returns either a set of numbers if mode repeats or a single number.
+        const bestTimeArray = [];
         if (typeof bestTime === 'object') {
-            bestTime.forEach((timeCode) => prettyPrintTime(timeCode.toString()));
-            remove(dateCodeArray, '111800');
-            console.log(dateCodeArray);
-            bestTime.forEach((timeCode) => prettyPrintTime(timeCode.toString()));
+            bestTime.forEach((timeCode) => {
+                prettyPrintTime(timeCode.toString());
+                bestTimeArray.push(timeCode.toString());
+            });
+            generateSecondDataset(dateCodeArray, bestTimeArray)
+                .then((secondBestTime) => {
+                    secondBestTime.forEach((timeCode) => prettyPrintTime(timeCode.toString()));
+                });
         } else {
             prettyPrintTime(bestTime.toString());
-            remove(dateCodeArray, bestTime);
-            prettyPrintTime(bestTime.toString());
+            prettyPrintTime(generateSecondDataset(dateCodeArray, bestTime).toString());
         }
-        
-                
-        // Need to remove elements that match the mode.
     });
 });
 
@@ -94,4 +96,15 @@ const daySwitch = (dayCode) => {
             return 'Friday';
             break; 
     };
+}
+
+const generateSecondDataset = (timeArray, prevMode) => {
+    return new Promise((resolve, reject) => {
+        console.log('Second best time slots:');
+        resolve(findMode(timeArray, prevMode));
+    }).catch((err) => console.log(err));
+}
+
+const findMode = (timeArray, prevMode) => {
+    return stats.mode(without(timeArray, prevMode));
 }
