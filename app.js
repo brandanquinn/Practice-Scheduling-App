@@ -52,6 +52,12 @@ fs.readFile('./availability.csv', (err, data) => {
  */
 const getTimeCode = (time, dayNum) => `${dayNum}${time.trim().slice(0, -2).replace(':', '8')}`;
 
+/**
+ * Wrapper function that takes in either a set of mode values or a single mode; if the mode is a set - prettyPrintTime() is called for each element
+ * if the mode is singular - prettyPrintTime() is simply called with that value.
+ * @param {Object/Number} bestTime
+ * @returns {Promise}
+ */
 const printWrapper = (bestTime) => {
     return new Promise((resolve, reject) => {
         if (!bestTime) { reject('Mode is undefined'); }
