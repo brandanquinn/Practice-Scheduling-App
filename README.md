@@ -16,3 +16,4 @@ slots, but currently only at 30 minute intervals.
 * Looking into the Sheets API in order to pull live updates from your scheduling sheet.
 * Need to make date encoding scalable - currently if you use an '8' in your time it will interfere with the date
 string encoding/decoding function.
+* Need to add a csv file in the repo for testing/formatting purposes.
