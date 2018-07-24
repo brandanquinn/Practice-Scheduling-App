@@ -139,7 +139,7 @@ const findMode = (timeArray, prevMode) => {
         return stats.mode(difference(timeArray, modeArray));
     } else if (typeof prevMode === 'number') {
         // If first mode is a single value.
-        return stats.mode(difference(timeArray, prevMode.toString()));
+        return stats.mode(difference(timeArray, [prevMode.toString()]));
     } else {
         // If this is the first time mode is computed.
         return stats.mode(timeArray);
