@@ -28,14 +28,14 @@ fs.readFile('./availability.csv', (err, data) => {
         // Find best times
 
         // Need to convert each element of bestTime to string.
-        generateDataset(dateCodeArray)
+        findModeWrapper(dateCodeArray)
             .then((bestTime) => {
                 console.log('\nBest times:');
                 console.log(bestTime);
                 printWrapper(bestTime);
                 return bestTime;
             })
-            .then((prevMode) => generateDataset(dateCodeArray, prevMode)) 
+            .then((prevMode) => findModeWrapper(dateCodeArray, prevMode)) 
             .then((secondBestTime) => {
                 console.log('\nSecond best times:');
                 secondBestTime ? console.log(secondBestTime) : console.log('Undefined');
@@ -112,21 +112,36 @@ const daySwitch = (dayCode) => {
     };
 };
 
-const generateDataset = (timeArray, prevMode = undefined) => {
+/**
+ * Takes in an array of time slots and an optional variable for previous mode. Function returns a promise and calls findMode().
+ * @param {Array} timeArray 
+ * @param {Object/Number} prevMode 
+ */
+const findModeWrapper = (timeArray, prevMode = undefined) => {
     return new Promise((resolve, reject) => {
         if (!timeArray) { reject('Array is undefined'); }
         resolve(findMode(timeArray, prevMode));
     }).catch((err) => console.log(err));
 };
 
+/**
+ * Called by findModeWrapper; checks type of prevMode - if it is a set of values; creates an array of strings in order to remove 
+ * elements of the previous mode and recalculate for second best time slot(s). If it is a single value - it simply removes that value from the array
+ * of time slots and recalculates. If prevMode is undefined; it simply calculates the mode for the first time.
+ * @param {Array} timeArray 
+ * @param {Object/Number} prevMode 
+ */
 const findMode = (timeArray, prevMode) => {
     if (typeof prevMode === 'object') {
+        // If first mode is a set of values.
         let modeArray = [...prevMode];
         modeArray = modeArray.map((number) => number.toString());
         return stats.mode(difference(timeArray, modeArray));
     } else if (typeof prevMode === 'number') {
+        // If first mode is a single value.
         return stats.mode(difference(timeArray, prevMode.toString()));
     } else {
+        // If this is the first time mode is computed.
         return stats.mode(timeArray);
     }
 };

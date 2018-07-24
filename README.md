@@ -16,5 +16,3 @@ slots, but currently only at 30 minute intervals.
 * Looking into the Sheets API in order to pull live updates from your scheduling sheet.
 * Need to make date encoding scalable - currently if you use an '8' in your time it will interfere with the date
 string encoding/decoding function.
-* Currently working on running the mode calculation a second time after removing the #1 option(s) for time slot(s),
-this will be done because we'll need two days minimum for practices.
