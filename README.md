@@ -15,7 +15,7 @@ slots, but currently only at 30 minute intervals. If you'd like to see the exact
 
 To run the app, all you need to do is: 
 * migrate to folder 
-* run 'yarn' in the console to install packages
+* run 'npm install' or 'yarn' in the console to install packages
 * run 'node app.js'
 
 Next - Currently the code opens and parses the availability-test.csv file.
