@@ -2,7 +2,7 @@ const csv = require('csv');
 const fs = require('fs');
 const { getTimeCode, findModeWrapper, printWrapper } = require('./utils/utils'); 
 
-fs.readFile('./availability-test.csv', (err, data) => {
+fs.readFile('./availability.csv', (err, data) => {
     if (err) throw err;
     const csv_string = data.toString();
     csv.parse(csv_string, (err, data) => {
