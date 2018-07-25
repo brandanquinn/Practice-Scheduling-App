@@ -1,6 +1,6 @@
 const csv = require('csv');
 const fs = require('fs');
-const { getTimeCode, findModeWrapper, printWrapper } = require('./utils/utils'); 
+const { getTimeCode, findTimeSlotWrapper, printTimeSlotWrapper } = require('./utils/utils'); 
 
 fs.readFile('./availability.csv', (err, data) => {
     if (err) throw err;
@@ -12,7 +12,7 @@ fs.readFile('./availability.csv', (err, data) => {
         // Ignores first row containing table headers.
         for (var i = 1; i < data.length; i++) {
             data[i] = data[i].map((avail, column) => {
-                // if index
+                // if column is between 2 and 6 (time data columns), parses string to array based on ',' as delimeter, encodes them and pushes to array.
                 if (column < 2 || column > 6) { return avail; }
                 totalAvail.push(avail.split(',').map((time) => {
                     if (time) {
@@ -23,19 +23,18 @@ fs.readFile('./availability.csv', (err, data) => {
         };
         // Converts array of nested arrays into one array of timeCodes.
         let dateCodeArray = [].concat.apply([], totalAvail);
-        // Find best times
 
-        // Need to convert each element of bestTime to string.
-        findModeWrapper(dateCodeArray)
+
+        findTimeSlotWrapper(dateCodeArray)
             .then((bestTime) => {
                 console.log('Best times:');
-                printWrapper(bestTime);
+                printTimeSlotWrapper(bestTime);
                 return bestTime;
             })
-            .then((prevMode) => findModeWrapper(dateCodeArray, prevMode)) 
+            .then((prevMode) => findTimeSlotWrapper(dateCodeArray, prevMode)) 
             .then((secondBestTime) => {
                 console.log('\nSecond best times:');
-                printWrapper(secondBestTime);
-            })
+                printTimeSlotWrapper(secondBestTime);
+            });
     });
 });
