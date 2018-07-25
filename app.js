@@ -8,15 +8,15 @@ fs.readFile('./availability-test.csv', (err, data) => {
     csv.parse(csv_string, (err, data) => {
         if (err) throw err;
         // Iterate through each individuals availability within data array to generate a single array of encoded day/time strings.
-        // After array is generated; find the mode object (might need package to do so)
-        // After mode is found; remove all elements that match the mode and compute again for second time slot.
         let totalAvail = [];
+        // Ignores first row containing table headers.
         for (var i = 1; i < data.length; i++) {
-            data[i] = data[i].map((avail, index) => {
-                if (index < 2 || index > 6) { return avail; }
+            data[i] = data[i].map((avail, column) => {
+                // if index
+                if (column < 2 || column > 6) { return avail; }
                 totalAvail.push(avail.split(',').map((time) => {
                     if (time) {
-                        return getTimeCode(time, index-1)
+                        return getTimeCode(time, column-1)
                     }
                 }));
             });
