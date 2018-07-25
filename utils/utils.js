@@ -15,7 +15,7 @@ const getTimeCode = (time, dayNum) => `${dayNum}${time.trim().slice(0, -2).repla
  * @param {Object/Number} bestTime
  * @returns {Promise}
  */
-const printWrapper = (bestTime) => {
+const printTimeSlotWrapper = (bestTime) => {
     return new Promise((resolve, reject) => {
         if (!bestTime) { reject('Mode is undefined'); }
         if (typeof bestTime === 'object') {
@@ -81,10 +81,10 @@ const daySwitch = (dayCode) => {
  * @param {Object/Number} prevMode 
  * @returns {Promise}
  */
-const findModeWrapper = (timeArray, prevMode = undefined) => {
+const findTimeSlotWrapper = (timeArray, prevMode = undefined) => {
     return new Promise((resolve, reject) => {
         if (!timeArray) { reject('Array is undefined'); }
-        resolve(findMode(timeArray, prevMode));
+        resolve(findTimeSlot(timeArray, prevMode));
     }).catch((err) => console.log(err));
 };
 
@@ -95,7 +95,7 @@ const findModeWrapper = (timeArray, prevMode = undefined) => {
  * @param {Array} timeArray 
  * @param {Object/Number} prevMode 
  */
-const findMode = (timeArray, prevMode) => {
+const findTimeSlot = (timeArray, prevMode) => {
     if (typeof prevMode === 'object') {
         // If first mode is a set of values.
         let modeArray = [...prevMode];
@@ -112,6 +112,6 @@ const findMode = (timeArray, prevMode) => {
 
 module.exports = {
     getTimeCode,
-    findModeWrapper,
-    printWrapper
+    findTimeSlotWrapper,
+    printTimeSlotWrapper
 };
