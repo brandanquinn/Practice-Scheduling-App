@@ -32,7 +32,7 @@ To change the data you can reference the Google Sheet here:
 
 Change the data as necessary / add more based on your needs, then:
 * download the file as a csv
-* migrate file to the repo root folder
+* place file in the repo root folder
 * make sure to correctly input your file in app.js (see above for guide)
 * run 'node app.js' in console
 
