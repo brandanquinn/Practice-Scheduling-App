@@ -2,7 +2,7 @@ const csv = require('csv');
 const fs = require('fs');
 const { getTimeCode, findModeWrapper, printWrapper } = require('./utils/utils'); 
 
-fs.readFile('./availability.csv', (err, data) => {
+fs.readFile('./availability-test.csv', (err, data) => {
     if (err) throw err;
     const csv_string = data.toString();
     csv.parse(csv_string, (err, data) => {
@@ -28,15 +28,13 @@ fs.readFile('./availability.csv', (err, data) => {
         // Need to convert each element of bestTime to string.
         findModeWrapper(dateCodeArray)
             .then((bestTime) => {
-                console.log('\nBest times:');
-                console.log(bestTime);
+                console.log('Best times:');
                 printWrapper(bestTime);
                 return bestTime;
             })
             .then((prevMode) => findModeWrapper(dateCodeArray, prevMode)) 
             .then((secondBestTime) => {
                 console.log('\nSecond best times:');
-                console.log(secondBestTime);
                 printWrapper(secondBestTime);
             })
     });
