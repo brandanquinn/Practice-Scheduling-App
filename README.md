@@ -25,7 +25,7 @@ fs.readFile('./availability-test.csv', (err, data) => {
 ```
 Change this to:
 ```javascript
-fs.readFile('./yourFileNameHere.csv, (err, data) => {
+fs.readFile('./yourFileNameHere.csv', (err, data) => {
 ```
 To change the data you can reference the Google Sheet here:
 [CSV Reference](https://docs.google.com/spreadsheets/d/1k8RxCDqoXLEvpui2TgShXwoqRmVR-Zro5_uHdM92bUI/edit?usp=sharing "CSV Reference")
